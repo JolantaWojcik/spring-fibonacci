@@ -17,20 +17,14 @@ import pl.spring.fibonacci.service.FibonacciService;
 @Service
 public class CacheAspect{
 
-	@Autowired
-	private FibonacciService fb;
 	private Map<Integer, BigInteger> cache;
 
 	@Around("execution(* pl.spring.fibonacci.service.impl.*.*(..))")
-	public Object catchTime(ProceedingJoinPoint pjp) {
+	public Object catchTime(ProceedingJoinPoint pjp) throws Throwable {
 		cache = new HashMap<Integer, BigInteger>();
 		Object[] args = pjp.getArgs();
 		if(!cache.containsKey(args[0])){
-			try {
-				cache.put((Integer) args[0], (BigInteger) pjp.proceed());
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
+			cache.put((Integer) args[0], (BigInteger) pjp.proceed());
 		}
 		return cache.get(args[0]);
 	}
